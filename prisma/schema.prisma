@@ -51,6 +51,8 @@ source   LeadSource? @relation(fields: [sourceId], references: [id])
 statusId Int?
 status   LeadStatus? @relation(fields: [statusId], references: [id])
 
+messages Message[] 
+
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
 
@@ -58,6 +60,26 @@ updatedAt DateTime @updatedAt
 @@index([userId])
 @@index([sourceId])
 @@index([statusId])
+}
+
+
+model Message {
+  id        Int      @id @default(autoincrement())
+
+  leadId    Int
+  lead      Lead     @relation(fields: [leadId], references: [id])
+
+  message   String
+  messageId String?  @unique
+
+  direction String   // INCOMING / OUTGOING
+  type      String?  // text, image, document
+
+  timestamp Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
 }
 
 model LeadSource {

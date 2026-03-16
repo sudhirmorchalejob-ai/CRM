@@ -103,11 +103,28 @@ const getAdPlatform = async (adId, token) => {
 
 };
 
+
+const getTokenInfo = async (token) => {
+
+  const response = await axios.get(
+    "https://graph.facebook.com/debug_token",
+    {
+      params: {
+        input_token: token,
+        access_token: `${process.env.APP_ID}|${process.env.APP_SECRET}`
+      }
+    }
+  );
+
+  return response.data.data;
+};
+
 module.exports = {
   getAccessToken,
   getUserPages,
   getLeadData,
   getLongLivedUserToken,
   getFacebookUser,
-  getAdPlatform
+  getAdPlatform,
+  getTokenInfo
 };

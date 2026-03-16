@@ -10,7 +10,7 @@ const createUserService = async (data, tenantId) => {
 
   const userData = {
     ...data,
-    tenantId
+    tenantId 
   };
 
   const user = await userRepo.createUser(userData);
