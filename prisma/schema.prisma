@@ -1,0 +1,85 @@
+generator client {
+provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "postgresql"
+}
+
+model Tenant {
+id        Int      @id @default(autoincrement())
+name      String
+createdAt DateTime @default(now())
+
+bitrixWebhookUrl String?
+
+users         User[]
+leads         Lead[]
+facebookPages FacebookPage[]
+}
+
+model User {
+id       Int    @id @default(autoincrement())
+email    String @unique
+name     String?
+
+tenantId Int
+tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+leads    Lead[]
+}
+
+model Lead {
+id             Int     @id @default(autoincrement())
+name           String
+facebookLeadId String? @unique
+
+email String?
+phone String?
+
+bitrixLeadId String?
+
+tenantId Int
+tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+userId Int
+assignedTo User @relation(fields: [userId], references: [id])
+
+sourceId Int?
+source   LeadSource? @relation(fields: [sourceId], references: [id])
+
+statusId Int?
+status   LeadStatus? @relation(fields: [statusId], references: [id])
+
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+
+@@index([tenantId])
+@@index([userId])
+@@index([sourceId])
+@@index([statusId])
+}
+
+model LeadSource {
+id   Int    @id @default(autoincrement())
+name String
+
+leads Lead[]
+}
+
+model LeadStatus {
+id   Int    @id @default(autoincrement())
+name String
+
+leads Lead[]
+}
+
+model FacebookPage {
+id       Int    @id @default(autoincrement())
+pageId   String @unique
+pageName String
+pageAccessToken String 
+
+tenantId Int
+tenant   Tenant @relation(fields: [tenantId], references: [id])
+}
