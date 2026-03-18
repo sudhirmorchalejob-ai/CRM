@@ -16,6 +16,7 @@ bitrixWebhookUrl String?
 users         User[]
 leads         Lead[]
 facebookPages FacebookPage[]
+FacebookUser FacebookUser[]
 }
 
 model User {
@@ -23,6 +24,7 @@ id       Int    @id @default(autoincrement())
 email    String @unique
 name     String?
 
+facebookId  String? @unique
 tenantId Int
 tenant   Tenant @relation(fields: [tenantId], references: [id])
 
@@ -33,6 +35,9 @@ model Lead {
 id             Int     @id @default(autoincrement())
 name           String
 facebookLeadId String? @unique
+
+psid String? @unique
+step String?
 
 email String?
 phone String?
@@ -84,7 +89,7 @@ model Message {
 
 model LeadSource {
 id   Int    @id @default(autoincrement())
-name String
+name String @unique
 
 leads Lead[]
 }
@@ -104,4 +109,16 @@ pageAccessToken String
 
 tenantId Int
 tenant   Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model FacebookUser {
+  id             Int      @id @default(autoincrement())
+  facebookUserId String?   @unique
+  userToken      String
+  expiresAt      DateTime?
+
+  tenantId Int
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  createdAt DateTime @default(now())
 }

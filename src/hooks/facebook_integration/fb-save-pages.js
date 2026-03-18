@@ -26,6 +26,25 @@ exports.facebookCallback = catchAsync(async (req, res) => {
     // STEP 3: get facebook user
     const fbUser = await facebookService.getFacebookUser(longToken);
 
+    console.log("user" , fbUser)
+
+    // ✅ STEP 3.5: Create or find user in User table
+
+const appUser = await db.user.upsert({
+  where: {
+    facebookId: fbUser.id 
+  },
+  update: {},
+  create: {
+    facebookId: fbUser.id,
+    name: fbUser.name,
+    email: `${fbUser.id}@facebook.com`, // fallback email
+    tenantId: 1
+  }
+});
+
+
+console.log("APP USER:", appUser);
 
 
     // STEP 4: save/update facebook user
@@ -49,8 +68,11 @@ exports.facebookCallback = catchAsync(async (req, res) => {
 
     });
 
+    console.log("token" , longToken )
+    
     // STEP 5: get pages
     const pages = await facebookService.getUserPages(longToken);
+    console.log("pages" , pages )
 
     for (let page of pages) {
 
@@ -66,7 +88,8 @@ exports.facebookCallback = catchAsync(async (req, res) => {
             create: {
                 pageId: page.id,
                 pageName: page.name,
-                pageAccessToken: page.access_token
+                pageAccessToken: page.access_token,
+                tenantId : 1
             }
 
         });

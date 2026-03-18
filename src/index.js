@@ -5,7 +5,7 @@ const apiRoutes = require('./routes/index.js');
 const GlobalErrorhandler = require("./utils/error-handler.js");
 const fb_page_route = require("./routes/fb-pages.js")
 const fb_webhook_route = require("./routes/fb-webhook.js")
-
+const messenger_webhook_route = require("./routes/messenger-webhook.js")
 require("dotenv").config()
 const app = express();
 
@@ -23,6 +23,7 @@ app.use(express.urlencoded({extended  : true}))
 app.use(fb_page_route)
 app.use(fb_webhook_route)
 app.use(whatsapp_webhook_route)
+app.use(messenger_webhook_route)
 // this is our main api routes --> our api will look /api/v1
 app.use("/api" , apiRoutes)
 
@@ -40,7 +41,7 @@ app.get("/", (req, res) => {
     `https://www.facebook.com/v19.0/dialog/oauth` +
     `?client_id=${process.env.APP_ID}` +
     `&redirect_uri=${process.env.REDIRECT_URI}` +
-    `&scope=pages_show_list,pages_read_engagement,leads_retrieval`;
+    `&scope=pages_show_list,pages_read_engagement,leads_retrieval,pages_messaging`;
 
   res.send(`
     <h2>Facebook CRM Test</h2>
